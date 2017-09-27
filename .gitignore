@@ -1,0 +1,6 @@
+*.gem
+Gemfile.lock
+
+.buildpath
+.project
+.DS_Store
