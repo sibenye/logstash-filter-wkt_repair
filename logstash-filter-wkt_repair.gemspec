@@ -2,9 +2,9 @@ Gem::Specification.new do |s|
   s.name          = 'logstash-filter-wkt_repair'
   s.version       = '0.1.0'
   s.licenses      = ['Apache License (2.0)']
-  s.summary       = 'TODO: Write a short summary, because Rubygems requires one.'
-  s.description   = 'TODO: Write a longer description or delete this line.'
-  s.homepage      = 'TODO: Put your plugin''s website or public repo URL here.'
+  s.summary       = 'Logstash filter to repair a WKT shape data.'
+  s.description   = 'It takes ambigous or ill-defined polygons and returns a coherent and clearly defined output.'
+  s.homepage      = 'https://github.com/ForRentCom/logstash-filter-wkt_repair'
   s.authors       = ['Silver Ibenye']
   s.email         = 'silver.ibenye@forrent.com'
   s.require_paths = ['lib']

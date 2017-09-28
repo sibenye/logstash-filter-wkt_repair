@@ -7,15 +7,16 @@ describe LogStash::Filters::WktRepair do
     let(:config) do <<-CONFIG
       filter {
         wkt_repair {
-          message => "Hello World"
+          source => "geometry"
+          target => "geometry"
         }
       }
     CONFIG
     end
 
-    sample("message" => "some text") do
-      expect(subject).to include("message")
-      expect(subject['message']).to eq('Hello World')
+    sample("geometry" => "POLYGON((0 0, 10 0, 10 11, 11 10, 0 10))") do
+      expect(subject).to include("geometry")
+      expect(subject['geometry']).to eq('MULTIPOLYGON (((10 0,10 10,0 10,0 0,10 0)),((11 10,10 11,10 10,11 10)))')
     end
   end
 end
