@@ -1,27 +1,23 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
+require "open3"
 
-# This  filter will replace the contents of the default 
-# message field with whatever you specify in the configuration.
-#
-# It is only intended to be used as an .
 class LogStash::Filters::WktRepair < LogStash::Filters::Base
 
-  # Setting the config_name here is required. This is how you
-  # configure this filter from your Logstash config.
-  #
-  # filter {
-  #    {
-  #     message => "My message..."
-  #   }
+  # Usage:
+  # [source,ruby]
+  # ----------------------------------
+  # wkt_repair => {
+  #  "source" => "name of field containing WKT shape data"
+  #  "target" => "name of field to put the repaired WKT"
   # }
-  #
+  # ----------------------------------
   config_name "wkt_repair"
   
-  # Replace the message with this value.
-  config :message, :validate => :string, :default => "Hello World!"
-  
+  config :source, :validate => :string, :required => true
+  config :target, :validate => :string, :default => 'wkt_repaired'
+  config :tag_on_failure, :validate => :array, :default => [ '_wkt_repair_failure' ]
 
   public
   def register
@@ -31,10 +27,21 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
   public
   def filter(event)
 
-    if @message
-      # Replace the event message with our message as configured in the
-      # config file.
-      event["message"] = @message
+    wkt = event.get(@source)
+
+    begin
+      cmd = "prepair --wkt '#{wkt}'"
+      stdout, stderr, status = Open3.capture3("#{cmd}")
+
+      if status.success?
+        event.set(@target, stdout.strip)
+      else
+        @logger.error("WKT Repair Error: #stderr")
+        @tag_on_failure.each { |tag| event.tag(tag) }
+      end
+    rescue Exception => e
+      @logger.error("WKT Repair Error", :exception => e)
+      @tag_on_failure.each { |tag| event.tag(tag) }
     end
 
     # filter_matched should go in the last line of our successful code

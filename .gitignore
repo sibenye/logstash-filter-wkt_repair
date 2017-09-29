@@ -3,4 +3,5 @@ Gemfile.lock
 
 .buildpath
 .project
+.bundle
 .DS_Store
