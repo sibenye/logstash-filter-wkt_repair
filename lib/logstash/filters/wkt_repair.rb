@@ -1,6 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
+require "open3"
 
 class LogStash::Filters::WktRepair < LogStash::Filters::Base
 
@@ -29,11 +30,17 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
     wkt = event.get(@source)
 
     begin
-      cmd = "prepair --wkt #{wkt}"
-      wkt_repaired = `#{cmd}`
-      event.set(@target, wkt_repaired)
+      cmd = "prepair --wkt '#{wkt}'"
+      stdout, stderr, status = Open3.capture3("#{cmd}")
+
+      if status.success?
+        event.set(@target, stdout.strip)
+      else
+        @logger.error("WKT Repair Error: #stderr")
+        @tag_on_failure.each { |tag| event.tag(tag) }
+      end
     rescue Exception => e
-      @logger.error('WKT Repair Error', :exception => e)
+      @logger.error("WKT Repair Error", :exception => e)
       @tag_on_failure.each { |tag| event.tag(tag) }
     end
 
