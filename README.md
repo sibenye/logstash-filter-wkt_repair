@@ -1,4 +1,4 @@
-# WKT RepairLogstash Filter
+# WKT Repair Logstash Filter
 
 Repairs WKTs on a Logstash event that ambigous or ill-defined polygons and returns a a coherent and clearly defined output.
 
