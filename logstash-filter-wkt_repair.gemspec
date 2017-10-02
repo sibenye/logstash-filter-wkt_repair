@@ -4,9 +4,9 @@ Gem::Specification.new do |s|
   s.licenses      = ['Apache-2.0']
   s.summary       = 'Logstash filter to repair a WKT shape data.'
   s.description   = 'It takes ambigous or ill-defined polygons and returns a coherent and clearly defined output.'
-  s.homepage      = 'https://github.com/ForRentCom/logstash-filter-wkt_repair'
+  s.homepage      = 'https://github.com/sibenye/logstash-filter-wkt_repair'
   s.authors       = ['Silver Ibenye']
-  s.email         = 'silver.ibenye@forrent.com'
+  s.email         = 'sibenye@gmail.com'
   s.require_paths = ['lib']
 
   # Files
