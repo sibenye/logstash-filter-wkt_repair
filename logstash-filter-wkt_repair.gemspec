@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name          = 'logstash-filter-wkt_repair'
-  s.version       = '0.1.0'
-  s.licenses      = ['Apache License (2.0)']
+  s.version       = '0.1.6'
+  s.licenses      = ['Apache-2.0']
   s.summary       = 'Logstash filter to repair a WKT shape data.'
   s.description   = 'It takes ambigous or ill-defined polygons and returns a coherent and clearly defined output.'
   s.homepage      = 'https://github.com/ForRentCom/logstash-filter-wkt_repair'
@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
 
   # Gem dependencies
   s.add_runtime_dependency "logstash-core-plugin-api", ">= 1.60", "<= 2.99"
-  s.add_development_dependency 'logstash-devutils'
+  s.add_development_dependency 'logstash-devutils', '1.3.3'
 end

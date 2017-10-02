@@ -36,11 +36,11 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
       if status.success?
         event.set(@target, stdout.strip)
       else
-        @logger.error("WKT Repair Error: #stderr")
+        @logger.error("WKT Repair Error: #{stderr}", :wkt => wkt)
         @tag_on_failure.each { |tag| event.tag(tag) }
       end
     rescue Exception => e
-      @logger.error("WKT Repair Error", :exception => e)
+      @logger.error("WKT Repair Exception", :exception => e)
       @tag_on_failure.each { |tag| event.tag(tag) }
     end
 
