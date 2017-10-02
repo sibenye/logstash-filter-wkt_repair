@@ -1,6 +1,8 @@
 # WKT Repair Logstash Filter
 
-Repairs WKTs on a Logstash event that are ambigous or ill-defined polygons and returns a coherent and clearly defined output.
+[![Gem Version](https://badge.fury.io/rb/logstash-filter-wkt_repair.svg)](https://badge.fury.io/rb/logstash-filter-wkt_repair)
+
+Repairs WKT Polygons/Multipolygons on a Logstash event that are ambiguous or ill-defined and returns a coherent and clearly defined output.
 
 Examples of ambigous or ill-defined polygons include, but not limited to:
 
@@ -95,5 +97,11 @@ gem build logstash-filter-wkt_repair.gemspec
 bin/logstash-plugin install /your/local/plugin/logstash-filter-wkt_repair.gem
 ```
 - Start Logstash and proceed to using/testing the plugin
+
+### 3. Installing the plugin from rubyGems
+- To install the plugin from rubyGems
+```sh
+bin/logstash-plugin install logstash-filter-wkt_repair.gem
+```
 
 For walk through of developing Logstash filter plugin see https://www.elastic.co/guide/en/logstash/current/_how_to_write_a_logstash_filter_plugin.html
