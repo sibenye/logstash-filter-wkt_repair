@@ -46,4 +46,10 @@ bin/logstash-plugin install /your/local/plugin/logstash-filter-wkt_repair.gem
 ```
 - Start Logstash and proceed to using/testing the plugin
 
+### 3. Installing the plugin from rubyGems
+- To install the plugin from rubyGems
+```sh
+bin/logstash-plugin install logstash-filter-wkt_repair.gem
+```
+
 For walk through of developing Logstash filter plugin see https://www.elastic.co/guide/en/logstash/current/_how_to_write_a_logstash_filter_plugin.html
