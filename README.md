@@ -1,19 +1,58 @@
-# Logstash Plugin
+# WKT Repair Logstash Filter
 
-This is a plugin for [Logstash](https://github.com/elastic/logstash).
+Repairs WKTs on a Logstash event that are ambigous or ill-defined polygons and returns a coherent and clearly defined output.
 
-It is fully free and fully open source. The license is Apache 2.0, meaning you are pretty much free to use it however you want in whatever way.
+Examples of ambigous or ill-defined polygons include, but not limited to:
 
-## Documentation
+* A polygon with dangling edge
+* A polygon that is not closed
+* A polygon that  self intersects
 
-Logstash provides infrastructure to automatically generate documentation for this plugin. We use the asciidoc format to write documentation so any comments in the source code will be first converted into asciidoc and then into html. All plugin documentation are placed under one [central location](http://www.elastic.co/guide/en/logstash/current/).
+## Config example
+```javascript
+{
+    ...
+    filter {
+        wkt_repair {
+            source => "wkt"
+            target => "wkt_repaired"
+            tag_on_failure => [ "_wkt_repair_failure" ]
+        }
+    }
+    ...
+}
+```
 
-- For formatting code or config example, you can use the asciidoc `[source,ruby]` directive
-- For more asciidoc formatting tips, see the excellent reference here https://github.com/elastic/docs#asciidoc-guide
+## Dependencies
 
-## Need Help?
+Yeah, unfortunately, this plugin depends on your server/container having these installed;
+- [cmake](https://cmake.org/download/)
+- [prepair](https://github.com/ForRentCom/prepair)
 
-Need help? Try #logstash on freenode IRC or the https://discuss.elastic.co/c/logstash discussion forum.
+### Dependency installation
+Run the following commands to install the dependencies;
+
+Installing cmake:
+```sh
+wget https://cmake.org/files/v3.9/cmake-3.9.3.tar.gz
+tar xzf cmake-3.9.3.tar.gz
+cd cmake-2.8.3
+./configure --prefix=/opt/cmake
+make
+make install
+```
+Add `/opt/cmake/bin` to your $PATH
+
+Installing prepair:
+```sh
+wget https://github.com/ForRentCom/prepair/archive/master.zip
+unzip prepair-master.zip -d /opt
+mv /opt/prepair-master /opt/prepair
+cd /opt/prepair
+cmake .
+make
+```
+Add `/opt/prepair` to your $PATH
 
 ## Developing
 
@@ -21,8 +60,10 @@ Need help? Try #logstash on freenode IRC or the https://discuss.elastic.co/c/log
 
 #### Code
 - To get started, you'll need JRuby with the Bundler gem installed.
-
-- Create a new plugin or clone and existing from the GitHub [logstash-plugins](https://github.com/logstash-plugins) organization. We also provide [example plugins](https://github.com/logstash-plugins?query=example).
+```sh
+rvm install jruby
+jruby -S gem install bundler
+```
 
 - Install dependencies
 ```sh
@@ -43,44 +84,16 @@ bundle install
 bundle exec rspec
 ```
 
-### 2. Running your unpublished Plugin in Logstash
+### 2. Installing and Running the plugin locally
 
-#### 2.1 Run in a local Logstash clone
-
-- Edit Logstash `Gemfile` and add the local plugin path, for example:
-```ruby
-gem "logstash-filter-awesome", :path => "/your/local/logstash-filter-awesome"
-```
-- Install plugin
+- Build the plugin gem
 ```sh
-bin/logstash-plugin install --no-verify
-```
-- Run Logstash with your plugin
-```sh
-bin/logstash -e 'filter {awesome {}}'
-```
-At this point any modifications to the plugin code will be applied to this local Logstash setup. After modifying the plugin, simply rerun Logstash.
-
-#### 2.2 Run in an installed Logstash
-
-You can use the same **2.1** method to run your plugin in an installed Logstash by editing its `Gemfile` and pointing the `:path` to your local plugin development directory or you can build the gem and install it using:
-
-- Build your plugin gem
-```sh
-gem build logstash-filter-awesome.gemspec
+gem build logstash-filter-wkt_repair.gemspec
 ```
 - Install the plugin from the Logstash home
 ```sh
-bin/logstash-plugin install /your/local/plugin/logstash-filter-awesome.gem
+bin/logstash-plugin install /your/local/plugin/logstash-filter-wkt_repair.gem
 ```
-- Start Logstash and proceed to test the plugin
+- Start Logstash and proceed to using/testing the plugin
 
-## Contributing
-
-All contributions are welcome: ideas, patches, documentation, bug reports, complaints, and even something you drew up on a napkin.
-
-Programming is not a required skill. Whatever you've seen about open source and maintainers or community members  saying "send patches or die" - you will not see that here.
-
-It is more important to the community that you are able to contribute.
-
-For more information about contributing, see the [CONTRIBUTING](https://github.com/elastic/logstash/blob/master/CONTRIBUTING.md) file.
+For walk through of developing Logstash filter plugin see https://www.elastic.co/guide/en/logstash/current/_how_to_write_a_logstash_filter_plugin.html
