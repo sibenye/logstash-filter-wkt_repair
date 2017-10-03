@@ -29,6 +29,8 @@ Examples of ambigous or ill-defined polygons include, but not limited to:
 
 Yeah, unfortunately, this plugin depends on your server/container having these installed;
 - [cmake](https://cmake.org/download/)
+- [CGAL](https://www.cgal.org/download/linux.html)
+- [GDAL](http://www.gdal.org/)
 - [prepair](https://github.com/ForRentCom/prepair)
 
 ### Dependency installation
@@ -44,6 +46,17 @@ make
 make install
 ```
 Add `/opt/cmake/bin` to your $PATH
+
+Installing CGAL:
+```sh
+apt-get install libcgal-dev
+```
+
+Installing GDAL:
+```sh
+apt-get -y install libgdal-dev
+apt-get -y install gdal-bin
+```
 
 Installing prepair:
 ```sh
