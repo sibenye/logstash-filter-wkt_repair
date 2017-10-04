@@ -28,20 +28,27 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
   def filter(event)
 
     wkt = event.get(@source)
+    temp_file = "temp-wkt.txt"
 
     begin
-      cmd = "prepair --wkt '#{wkt}'"
-      stdout, stderr, status = Open3.capture3("#{cmd}")
+      File.open(temp_file, "w+") {|f| f.write("#{wkt}") }
 
+      wkt_repair_cmd = "prepair -f #{temp_file}"
+      std_out, std_err, status = Open3.capture3("#{wkt_repair_cmd}")
+      
       if status.success?
-        event.set(@target, stdout.strip)
+        event.set(@target, std_out.strip)
       else
-        @logger.error("WKT Repair Error: #{stderr}", :wkt => wkt)
+        @logger.error("WKT Repair Error: #{std_err}")
         @tag_on_failure.each { |tag| event.tag(tag) }
       end
     rescue Exception => e
       @logger.error("WKT Repair Exception", :exception => e)
       @tag_on_failure.each { |tag| event.tag(tag) }
+    ensure
+      if File.file?(temp_file)
+        File.open(temp_file, "r+") {|f| f.truncate(0) }
+      end
     end
 
     # filter_matched should go in the last line of our successful code
