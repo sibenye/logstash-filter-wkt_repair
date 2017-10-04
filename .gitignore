@@ -5,3 +5,4 @@ Gemfile.lock
 .project
 .bundle
 .DS_Store
+temp*
