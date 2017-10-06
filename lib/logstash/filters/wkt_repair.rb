@@ -30,7 +30,8 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
 
     wkt = event.get(@source)
     event_uuid = SecureRandom.uuid
-    temp_file = "temp-wkt_#{event_uuid}.txt"
+    random_hex = SecureRandom.hex(10)
+    temp_file = "temp-wkt_#{event_uuid}_#{random_hex}.txt"
 
     begin
       IO.write(temp_file, wkt)
@@ -49,8 +50,12 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
       @logger.error("WKT Repair Exception", :exception => e)
       @tag_on_failure.each { |tag| event.tag(tag) }
     ensure
-      if File.file?(temp_file)
-        File.delete(temp_file)
+      begin
+        if File.file?(temp_file)
+          File.delete(temp_file)
+        end
+      rescue Exception => e
+        @logger.error("WKT Repair Exception in ensure block", :exception => e)
       end
     end
 
