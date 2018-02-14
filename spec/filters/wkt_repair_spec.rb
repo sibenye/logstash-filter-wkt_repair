@@ -41,3 +41,22 @@ describe LogStash::Filters::WktRepair do
     end
   end
 end
+
+describe LogStash::Filters::WktRepair do
+  describe "Ignore Nil WKT" do
+    let(:config) do <<-CONFIG
+      filter {
+        wkt_repair {
+          source => "geometry"
+          target => "geometry"
+        }
+      }
+    CONFIG
+    end
+
+    sample("geometry" => nil) do
+      expect(subject).to include("geometry")
+      expect(subject.get('geometry')).to be_nil
+    end
+  end
+end
