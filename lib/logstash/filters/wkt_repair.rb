@@ -33,29 +33,31 @@ class LogStash::Filters::WktRepair < LogStash::Filters::Base
     random_hex = SecureRandom.hex(10)
     temp_file = "temp-wkt_#{event_uuid}_#{random_hex}.txt"
 
-    begin
-      IO.write(temp_file, wkt)
-
-      wkt_repair_cmd = "prepair -f #{temp_file}"
-      stdout, stderr, status = Open3.capture3("#{wkt_repair_cmd}")
-      
-      if status.success?
-        event.set(@target, stdout.strip)
-      else
-        @logger.error("WKT Repair Error: #{stderr}")
-        @logger.error("WKT Repair Output Message: #{stdout}")
-        @tag_on_failure.each { |tag| event.tag(tag) }
-      end
-    rescue Exception => e
-      @logger.error("WKT Repair Exception", :exception => e)
-      @tag_on_failure.each { |tag| event.tag(tag) }
-    ensure
+    unless wkt.nil?
       begin
-        if File.file?(temp_file)
-          File.delete(temp_file)
+        IO.write(temp_file, wkt)
+
+        wkt_repair_cmd = "prepair -f #{temp_file}"
+        stdout, stderr, status = Open3.capture3("#{wkt_repair_cmd}")
+        
+        if (status.success? && !stdout.nil?)
+          event.set(@target, stdout.strip)
+        else
+          @logger.error("WKT Repair Error: #{stderr}")
+          @logger.error("WKT Repair Output Message: #{stdout}")
+          @tag_on_failure.each { |tag| event.tag(tag) }
         end
       rescue Exception => e
-        @logger.error("WKT Repair Exception in ensure block", :exception => e)
+        @logger.error("WKT Repair Exception", :exception => e, :stacktrace => e.backtrace.join("\n"))
+        @tag_on_failure.each { |tag| event.tag(tag) }
+      ensure
+        begin
+          if File.file?(temp_file)
+            File.delete(temp_file)
+          end
+        rescue Exception => e
+          @logger.error("WKT Repair Exception in ensure block", :exception => e, :stacktrace => e.backtrace.join("\n"))
+        end
       end
     end
 
