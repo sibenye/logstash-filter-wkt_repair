@@ -1,8 +1,8 @@
-# WKT Repair Logstash Filter
+# WKT or GeoJson Repair Logstash Filter
 
 [![Gem Version](https://badge.fury.io/rb/logstash-filter-wkt_repair.svg)](https://badge.fury.io/rb/logstash-filter-wkt_repair)
 
-Repairs WKT Polygons/Multipolygons on a Logstash event that are ambiguous or ill-defined and returns a coherent and clearly defined output.
+Repairs WKT or GeoJson Polygons/Multipolygons on a Logstash event that are ambiguous or ill-defined and returns a coherent and clearly defined output.
 
 Examples of ambigous or ill-defined polygons include, but not limited to:
 
@@ -18,6 +18,7 @@ Examples of ambigous or ill-defined polygons include, but not limited to:
         wkt_repair {
             source => "wkt"
             target => "wkt_repaired"
+            type => "WKT|GeoJson"
             tag_on_failure => [ "_wkt_repair_failure" ]
         }
     }
@@ -74,8 +75,9 @@ Add `/opt/prepair` to your $PATH
 ### 1. Plugin Developement and Testing
 
 #### Code
-- To get started, you'll need JRuby with the Bundler gem installed.
+- To get started, you'll need rvm, JRuby and the Bundler gem installed.
 ```sh
+\curl -sSL https://get.rvm.io | bash -s stable
 rvm install jruby
 jruby -S gem install bundler
 ```
