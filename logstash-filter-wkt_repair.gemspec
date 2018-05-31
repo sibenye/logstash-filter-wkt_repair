@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name          = 'logstash-filter-wkt_repair'
   s.version       = '0.2.0'
   s.licenses      = ['Apache-2.0']
-  s.summary       = 'Logstash filter to repair a WKT shape data.'
+  s.summary       = 'Logstash filter to repair a WKT/GeoJson shape data.'
   s.description   = 'It takes ambigous or ill-defined polygons and returns a coherent and clearly defined output.'
   s.homepage      = 'https://github.com/sibenye/logstash-filter-wkt_repair'
   s.authors       = ['Silver Ibenye']
